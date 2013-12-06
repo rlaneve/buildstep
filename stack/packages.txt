@@ -43,3 +43,8 @@ socat
 sqlite3
 telnet
 zlib1g-dev
+libcairo2-dev
+libjpeg8-dev
+libpango1.0-dev
+libgif-dev
+g++
