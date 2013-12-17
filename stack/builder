@@ -61,10 +61,10 @@ fi
 mkdir -p $build_root/.profile.d
 
 if $HAS_RELEASE; then
-  default_types=$(ruby -e "require 'yaml';puts (begin YAML.load_file('$build_root/.release')['default_process_types'] rescue {} end).keys().join(', ')")
+  default_types=$(ruby -e "require 'yaml';puts (YAML.load_file('$build_root/.release')['default_process_types'] || {}).keys().join(', ')")
   [[ $default_types ]] && echo "       Default process types for $buildpack_name -> $default_types"
 
-  ruby -e "require 'yaml';(begin YAML.load_file('$build_root/.release')['config_vars'] rescue {} end).each{|k,v| puts \"#{k}=#{v}\"}" > $build_root/.profile.d/config_vars
+  ruby -e "require 'yaml';(YAML.load_file('$build_root/.release')['config_vars'] || {}).each{|k,v| puts \"#{k}=#{v}\"}" > $build_root/.profile.d/config_vars
 fi
 
 
@@ -87,7 +87,7 @@ cd $app_root
 if [[ -f Procfile ]]; then
     ruby -e "require 'yaml';puts YAML.load_file('Procfile')['\$1']" | bash
 else
-    ruby -e "require 'yaml';puts (begin YAML.load_file('.release')['default_process_types'] rescue {} end)['\$1']" | bash
+    ruby -e "require 'yaml';puts (YAML.load_file('.release')['default_process_types'] || {})['\$1']" | bash
 fi
 EOF
 chmod +x /start
